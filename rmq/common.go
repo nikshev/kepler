@@ -18,7 +18,7 @@ type QueueOptions struct {
 	Name             string
 	ExchangeName     string
 	ExchangeType     string
-	ExchangeInternal string
+	ExchangeInternal bool
 	ConsumerName     string
 	RoutingKey       string
 	QueueExclusive   bool
