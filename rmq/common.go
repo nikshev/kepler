@@ -17,8 +17,11 @@ type ConnectionFactoryFunc func() (*amqp.Connection, error)
 type QueueOptions struct {
 	Name             string
 	ExchangeName     string
+	ExchangeType     string
+	ExchangeInternal string
 	ConsumerName     string
 	RoutingKey       string
+	QueueExclusive   bool
 	Durable          bool
 	ExchangeDurable  bool
 	DeleteWhenUnused bool
@@ -49,12 +52,12 @@ func initExchangeChannelQueue(connFactory ConnectionFactoryFunc, queue QueueOpti
 	log.Infoln("Channel opened")
 	err = ch.ExchangeDeclare(
 		queue.ExchangeName,     // name
-		"topic",                // type
+		queue.ExchangeType,     // type
 		queue.ExchangeDurable,  // durable
 		queue.DeleteWhenUnused, // auto-deleted
-		false,        // internal
-		queue.NoWait, // noWait
-		nil,          // arguments
+		queue.ExchangeInternal, // internal
+		queue.NoWait,           // noWait
+		nil,                    // arguments
 	)
 
 	if err != nil {
@@ -66,9 +69,9 @@ func initExchangeChannelQueue(connFactory ConnectionFactoryFunc, queue QueueOpti
 		queue.Name,             // name
 		queue.Durable,          // durable
 		queue.DeleteWhenUnused, // delete when unused
-		false,        // exclusive
-		queue.NoWait, // no-wait
-		nil,          // arguments
+		queue.QueueExclusive,   // exclusive
+		queue.NoWait,           // no-wait
+		nil,                    // arguments
 	)
 
 	if err != nil {
