@@ -32,13 +32,15 @@ func NewSink(connFactory ConnectionFactoryFunc, queue QueueOptions, formatter ke
 						continue
 					}
 
-					err = ch.QueueBind(
-						queue.Name,         // name of the queue
-						queue.RoutingKey,   // bindingKey
-						queue.ExchangeName, // sourceExchange
-						queue.NoWait,       // noWait
-						nil,                // arguments
-					)
+					if len(queue.Name) != 0 {
+						err = ch.QueueBind(
+							queue.Name,         // name of the queue
+							queue.RoutingKey,   // bindingKey
+							queue.ExchangeName, // sourceExchange
+							queue.NoWait,       // noWait
+							nil,                // arguments
+						)
+					}
 
 					if err != nil {
 						log.Errorf("Failed to binding a queue: %v\n", err)
